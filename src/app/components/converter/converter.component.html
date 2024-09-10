@@ -1,0 +1,23 @@
+<div class="converter">
+  <div>
+  </div>
+  <div>
+    <input type="number" [(ngModel)]="amount1" (input)="convertFromInput1()">
+    <select [(ngModel)]="currency1" (change)="convertFromInput1()">
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+      <option value="UAH">UAH</option>
+    </select>
+  </div>
+
+  <div>=</div>
+
+  <div>
+    <input type="number" [(ngModel)]="amount2" (input)="convertFromInput2()">
+    <select [(ngModel)]="currency2" (change)="convertFromInput1()">
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+      <option value="UAH">UAH</option>
+    </select>
+  </div>
+</div>
