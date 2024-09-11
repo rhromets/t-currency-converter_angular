@@ -1,6 +1,7 @@
 <div class="converter">
   <div class="converter-field">
-    <input type="number" [(ngModel)]="amount1" (input)="convertFromInput1()">
+    <input type="number" [(ngModel)]="amount1" (input)="convertFromInput1()" (focus)="clearIfZero('amount1')"
+      (blur)="restoreIfEmpty('amount1')">
     <select [(ngModel)]="currency1" (change)="convertFromInput1()">
       <option value="USD">USD</option>
       <option value="EUR">EUR</option>
@@ -11,7 +12,8 @@
   <div class="divider">=</div>
 
   <div class="converter-field">
-    <input type="number" [(ngModel)]="amount2" (input)="convertFromInput2()">
+    <input type="number" [(ngModel)]="amount2" (input)="convertFromInput2()" (focus)="clearIfZero('amount2')"
+      (blur)="restoreIfEmpty('amount2')">
     <select [(ngModel)]="currency2" (change)="convertFromInput1()">
       <option value="USD">USD</option>
       <option value="EUR">EUR</option>

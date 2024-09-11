@@ -52,4 +52,17 @@ export class ConverterComponent {
     var result = (this.amount2 * rate2ToUSD) / rate1ToUSD;
     this.amount1 = Number(result.toFixed(2));
   }
+
+  clearIfZero(field: keyof ConverterComponent): void {
+    if (this[field] === 0) {
+      this[field] = null as never;
+    }
+  }
+
+  restoreIfEmpty(field: keyof ConverterComponent): void {
+    if (this[field] === null || this[field] === '') {
+      this[field] = 0 as never;
+    }
+  }
+
 }
