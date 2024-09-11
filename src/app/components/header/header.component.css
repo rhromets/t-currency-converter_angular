@@ -1,0 +1,21 @@
+.header {
+    margin: 4rem 2rem 0rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header h2 {
+    font-size: 1.9rem;
+    color: var(--primary-font-color);
+    padding-right: 50px;
+}
+
+.header h4 {
+    color: var(--primary-font-color);
+    margin: 6px;
+}
+
+.logo {
+    cursor: pointer;
+}

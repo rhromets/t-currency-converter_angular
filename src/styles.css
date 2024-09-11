@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+    --main-b-color: #c1c1c1;
+    --header-b-color: #4a4848;
+    --primary-font-color: #fff;
+    --secondary-font-color: #808080;
+}
+
+body {
+    margin: 0;
+    width: 100%;
+    background: #0f2027;
+    background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    color: var(--primary-font-color);
+}
