@@ -16,11 +16,13 @@ export class HeaderComponent {
 
   ngOnInit(): void {
     this.currencyService.getRatesUSD().subscribe(data => {
-      this.usdToUah = data.rates.UAH;
+      var result = data.rates.UAH;
+      this.usdToUah = result.toFixed(3);
     });
 
     this.currencyService.getRatesEUR().subscribe(data => {
-      this.eurToUah = data.rates.UAH;
+      var result = data.rates.UAH;
+      this.eurToUah = result.toFixed(3);
     });
   }
 }
