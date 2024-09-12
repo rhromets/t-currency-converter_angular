@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrencyService } from '../../services/currency.service';
 import { FormsModule } from '@angular/forms';
+import { NgFor } from '@angular/common';
+import { CURRENCY_LIST } from '../../currency-list';
 
 
 @Component({
   selector: 'app-converter',
   standalone: true,
-  imports: [FormsModule],
+  imports: [
+    FormsModule,
+    NgFor
+  ],
   templateUrl: './converter.component.html',
   styleUrl: './converter.component.css'
 })
@@ -16,6 +21,8 @@ export class ConverterComponent {
   amount2: number = 0;
   currency1: string = 'USD';
   currency2: string = 'UAH';
+  currencyList = CURRENCY_LIST;
+  error: string | null = null;
 
   rates: any = {};
 
@@ -26,41 +33,37 @@ export class ConverterComponent {
   }
 
   loadRates(): void {
-    this.currencyService.getRatesUSD().subscribe(data => {
-      this.rates['USD'] = data.rates;
+    this.currencyList.forEach(currency => {
+      this.currencyService.getRates(currency.name).subscribe(data => {
+        if (data) {
+          this.rates[currency.name] = data.rates;
+        } else {
+          this.error = `Failed to load rates for ${currency}.`;
+        }
+        this.rates[currency.name] = data.rates;
+      });
     });
-    this.currencyService.getRatesEUR().subscribe(data => {
-      this.rates['EUR'] = data.rates;
-    });
-    this.currencyService.getRatesUAH().subscribe(data => {
-      this.rates['UAH'] = data.rates;
-    });
+  }
+
+  convert(amount: number, fromCurrency: string, toCurrency: string): number {
+    const rateFromToUSD = this.rates[fromCurrency]?.['USD'];
+    const rateToUSD = this.rates[toCurrency]?.['USD'];
+    return (amount * rateFromToUSD) / rateToUSD;
   }
 
   // All currencies are converted relative to the USD
-  convertFromInput1(): void {
-    const rate1ToUSD: number = this.rates[this.currency1]['USD'];
-    const rate2ToUSD: number = this.rates[this.currency2]['USD'];
-    var result = (this.amount1 * rate1ToUSD) / rate2ToUSD;
-    this.amount2 = Number(result.toFixed(2));
-  }
-
-  // All currencies are converted relative to the USD
-  convertFromInput2(): void {
-    const rate1ToUSD: number = this.rates[this.currency1]['USD'];
-    const rate2ToUSD: number = this.rates[this.currency2]['USD'];
-    var result = (this.amount2 * rate2ToUSD) / rate1ToUSD;
-    this.amount1 = Number(result.toFixed(2));
-  }
-
-  clearIfZero(field: keyof ConverterComponent): void {
-    if (this[field] === 0) {
-      this[field] = null as never;
+  convertFromInput(fromField: 'fromInput1' | 'fromInput2') {
+    if (fromField == 'fromInput1') {
+      this.amount2 = Number(this.convert(this.amount1, this.currency1, this.currency2).toFixed(2));
+    } else if (fromField == 'fromInput2') {
+      this.amount1 = Number(this.convert(this.amount2, this.currency2, this.currency1).toFixed(2));
     }
   }
 
-  restoreIfEmpty(field: keyof ConverterComponent): void {
-    if (this[field] === null || this[field] === '') {
+  moderateField(field: keyof ConverterComponent, action: 'clear' | 'restore'): void {
+    if (action == 'clear' && this[field] == 0) {
+      this[field] = null as never;
+    } else if (action == 'restore' && (this[field] == null || this[field] == '')) {
       this[field] = 0 as never;
     }
   }

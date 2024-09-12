@@ -11,18 +11,29 @@ import { CurrencyService } from '../../services/currency.service';
 export class HeaderComponent {
   usdToUah: number = 0;
   eurToUah: number = 0;
+  error: string | null = null; 
 
   constructor(private currencyService: CurrencyService) { }
 
   ngOnInit(): void {
-    this.currencyService.getRatesUSD().subscribe(data => {
-      var result = data.rates.UAH;
-      this.usdToUah = result.toFixed(3);
+    this.loadRates();
+  }
+
+  loadRates(): void {
+    this.currencyService.getRates('USD').subscribe(data => {
+      if (data) {
+        this.usdToUah = Number(data.rates.UAH.toFixed(3));
+      } else {
+        this.error = 'Failed to load USD rates.';
+      }
     });
 
-    this.currencyService.getRatesEUR().subscribe(data => {
-      var result = data.rates.UAH;
-      this.eurToUah = result.toFixed(3);
+    this.currencyService.getRates('EUR').subscribe(data => {
+      if (data) {
+        this.eurToUah = Number(data.rates.UAH.toFixed(3));
+      } else {
+        this.error = 'Failed to load EUR rates.';
+      }
     });
   }
 }

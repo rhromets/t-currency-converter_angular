@@ -1,27 +1,31 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap, of, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class CurrencyService {
-  private apiUrlUSD = 'https://open.er-api.com/v6/latest/USD';
-  private apiUrlEUR = 'https://open.er-api.com/v6/latest/EUR';
-  private apiUrlUAH = 'https://open.er-api.com/v6/latest/UAH';
+  private apiUrl = 'https://open.er-api.com/v6/latest/';
+  private cachedRates: { [key: string]: any } = {};
 
   constructor(private http: HttpClient) { }
 
-  getRatesUSD(): Observable<any> {
-    return this.http.get<any>(this.apiUrlUSD);
-  }
+  getRates(currency: string): Observable<any> {
+    // If data has already been downloaded, return the saved data.
+    if (this.cachedRates[currency]) {
+      return of(this.cachedRates[currency]);
+    }
 
-  getRatesEUR(): Observable<any> {
-    return this.http.get<any>(this.apiUrlEUR);
-  }
-
-  getRatesUAH(): Observable<any> {
-    return this.http.get<any>(this.apiUrlUAH);
+    // If data is not loaded, make a request and cache the data
+    return this.http.get<any>(`${this.apiUrl}${currency}`).pipe(
+      // Save tge data in cache
+      tap(data => this.cachedRates[currency] = data),
+      catchError(error => {
+        console.error('Error fetching rates:', error);
+        return of(null);
+      })
+    );
   }
 }

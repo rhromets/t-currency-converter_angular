@@ -1,23 +1,19 @@
 <div class="converter">
   <div class="converter-field">
-    <input type="number" [(ngModel)]="amount1" (input)="convertFromInput1()" (focus)="clearIfZero('amount1')"
-      (blur)="restoreIfEmpty('amount1')">
-    <select [(ngModel)]="currency1" (change)="convertFromInput1()">
-      <option value="USD">USD</option>
-      <option value="EUR">EUR</option>
-      <option value="UAH">UAH</option>
+    <input type="number" [(ngModel)]="amount1" (input)="convertFromInput('fromInput1')"
+      (focus)="moderateField('amount1', 'clear')" (blur)="moderateField('amount1', 'restore')">
+    <select [(ngModel)]="currency1" (change)="convertFromInput('fromInput1')">
+      <option value={{currency.name}} *ngFor="let currency of currencyList">{{currency.name}}</option>
     </select>
   </div>
 
   <div class="divider">=</div>
 
   <div class="converter-field">
-    <input type="number" [(ngModel)]="amount2" (input)="convertFromInput2()" (focus)="clearIfZero('amount2')"
-      (blur)="restoreIfEmpty('amount2')">
-    <select [(ngModel)]="currency2" (change)="convertFromInput1()">
-      <option value="USD">USD</option>
-      <option value="EUR">EUR</option>
-      <option value="UAH">UAH</option>
+    <input type="number" [(ngModel)]="amount2" (input)="convertFromInput('fromInput2')"
+      (focus)="moderateField('amount2', 'clear')" (blur)="moderateField('amount2', 'restore')">
+    <select [(ngModel)]="currency2" (change)="convertFromInput('fromInput1')">
+      <option value={{currency.name}} *ngFor="let currency of currencyList">{{currency.name}}</option>
     </select>
   </div>
 </div>
