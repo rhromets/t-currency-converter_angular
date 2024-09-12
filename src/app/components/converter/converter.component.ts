@@ -22,32 +22,17 @@ export class ConverterComponent {
   currency1: string = 'USD';
   currency2: string = 'UAH';
   currencyList = CURRENCY_LIST;
-  error: string | null = null;
-
-  rates: any = {};
 
   constructor(private currencyService: CurrencyService) { }
 
   ngOnInit(): void {
-    this.loadRates();
-  }
-
-  loadRates(): void {
-    this.currencyList.forEach(currency => {
-      this.currencyService.getRates(currency.name).subscribe(data => {
-        if (data) {
-          this.rates[currency.name] = data.rates;
-        } else {
-          this.error = `Failed to load rates for ${currency}.`;
-        }
-        this.rates[currency.name] = data.rates;
-      });
-    });
+    this.currencyService.loadRates(this.currencyList.map(c => c.name));
   }
 
   convert(amount: number, fromCurrency: string, toCurrency: string): number {
-    const rateFromToUSD = this.rates[fromCurrency]?.['USD'];
-    const rateToUSD = this.rates[toCurrency]?.['USD'];
+    const rateFromToUSD = this.currencyService.rates[fromCurrency]?.['USD'];
+    const rateToUSD = this.currencyService.rates[toCurrency]?.['USD'];
+    if (!rateFromToUSD || !rateToUSD) return 0; 
     return (amount * rateFromToUSD) / rateToUSD;
   }
 
